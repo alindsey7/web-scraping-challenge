@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mission to Mars</title>
+    <link rel="stylesheet" href="static/style.css">
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+
+</head>
+
+
+
+<body>
+
+    <div class="container">
+        <div class="jumbotron text-center">
+            <h1>Let's Go on a Mission to Mars!</h1>
+            <p><a class="btn btn-dark" href="/scrape" role="button">Scrape Data!</a></p>
+        </div>
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="news_header">Most Recent News</h2>
+                <h3 class="article"> {{mars_info.latest_mars_article}}</h3>
+                <h4 class="article_descript">Description: {{mars_info.latest_article_par}}</h4>
+            </div> 
+        </div>
+        <br>
+        <br>
+
+        <div class="row">
+            
+            <div class="col-md-7">
+                <h2 class="header_feat_img">Mars Featured Image</h2>
+                <img src = {{mars_info.mars_feat_img}}>
+            </div>
+
+            <div class="col-md-5">
+                <h2 class="table_header">Mars & Earth Comparison </h2>
+                <table class= "table table-striped">{{mars_info.mars_earth_table | safe}}</table>
+                
+            </div>
+
+        </div>
+       <br>
+       <br> 
+
+        <h2 class="hems_images_header">Mars Hemisphere Images</h2>
+        <br>
+
+        <div class= "row">
+            {% for imgurl in mars_info.hems_titles_imgs %}
+            <div class= "col-md-3">
+            <img class="adjust_photos" width="225px" src = {{imgurl.img_url}}>
+            <h3>{{imgurl.title}}</h3>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
