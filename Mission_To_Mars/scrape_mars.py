@@ -31,7 +31,7 @@ def scrape():
     html = browser.html
     soup = BeautifulSoup(html, "html.parser")
     relative_image_path = soup.find_all('img')[1]["src"]
-    featured_image_url = url + relative_image_path
+    featured_image_url = url_2 + relative_image_path
 
     #Visit galaxyfacts-mars.com
     url_3="https://galaxyfacts-mars.com"
@@ -42,81 +42,50 @@ def scrape():
     mars_earth_compare_string=mars_earth_comparison.to_html()
     mars_earth_facts=mars_earth_compare_string.replace('\n','')
 
-    #Visit marshermispheres.com and go to each hemisphere
-    url_4="https://marshemispheres.com/cerberus.html"
+    url_4="https://marshemispheres.com/"
     browser.visit(url_4)
-
     html=browser.html
-    mars_hemispheres=BeautifulSoup(html,'html.parser')
+    mars_hemispheres_soup=BeautifulSoup(html,'html.parser')
 
-    mars_hemispheres_images=browser.links.find_by_partial_href('.jpg')
-    cerebrus_img=mars_hemispheres_images['href']
-    cerebrus_img
+    # Mars hemispheres products data
+    all_mars_hemispheres = mars_hemispheres_soup.find('div', class_='collapsible results')
+    mars_hemispheres = all_mars_hemispheres.find_all('div', class_='item')
 
-    url_5="https://marshemispheres.com/schiaparelli.html"
-    browser.visit(url_5)
-
-    html=browser.html
-    mars_hemispheres=BeautifulSoup(html,'html.parser')
-
-    mars_hemispheres_images=browser.links.find_by_partial_href('enhanced')
-    schiap_img=mars_hemispheres_images['href']
-    schiap_img
-
-    url_6="https://marshemispheres.com/syrtis.html"
-    browser.visit(url_6)
-
-    html=browser.html
-    mars_hemispheres=BeautifulSoup(html,'html.parser')
-
-
-    mars_hemispheres_images=browser.links.find_by_partial_href('enhanced')
-    syrtmaj_img=mars_hemispheres_images['href']
-    syrtmaj_img
-
-    url_7="https://marshemispheres.com/valles.html"
-    browser.visit(url_7)
-
-    html=browser.html
-    mars_hemispheres=BeautifulSoup(html,'html.parser')
-
-    mars_hemispheres_images=browser.links.find_by_partial_href('enhanced')
-    valmar_img=mars_hemispheres_images['href']
-    valmar_img
-
-    #Combine into a list
-    mars_hemispheres_list=[]
-    mars_hems_dict={
-        "title": 'Cerberus Hemisphere', 
-        "img_url": cerebrus_img
+    hemisphere_image_urls = []
+    
+    # Iterate through each hemisphere data
+    for i in mars_hemispheres:
+        # Collect Title
+        hemisphere = i.find('div', class_="description")
+        title = hemisphere.h3.text
         
-    }
-    mars_hemispheres_list.append(mars_hems_dict)
-    mars_hems_dict={
-        "title": 'Schiaparelli Hemisphere' , 
-        "img_url": schiap_img
+        # Collect image link by browsing to hemisphere page
+        hemisphere_link = hemisphere.a["href"]    
+        browser.visit(url_4 + hemisphere_link)
         
-    }
-    mars_hemispheres_list.append(mars_hems_dict)
-    mars_hems_dict={
-        "title": 'Syrtis Major Hemisphere' , 
-        "img_url": syrtmaj_img
+        image_html = browser.html
+        image_soup = BeautifulSoup(image_html, 'html.parser')
         
-    }
-    mars_hemispheres_list.append(mars_hems_dict)
-    mars_hems_dict={
-        "title": 'Valles_Marineris Hemisphere' , 
-        "img_url": valmar_img
+        image_link = image_soup.find('div', class_='downloads')
+        image_url = image_link.find('li').a['href']
+
+        # Create Dictionary to store title and url info
+        image_dict = {}
+        image_dict['title'] = title
+        image_dict['img_url'] = url_4 + image_url
         
-    }
-    mars_hemispheres_list.append(mars_hems_dict)
+        hemisphere_image_urls.append(image_dict)
+
+    print(hemisphere_image_urls)
+
+    
 
     mars_data = {
         "latest_mars_article": most_recent_title,
         "latest_article_par" : most_recent_paragraph,
         "mars_feat_img" : featured_image_url,
         "mars_earth_table": mars_earth_facts,
-        "hems_titles_imgs" : mars_hemispheres_list
+        "hems_titles_imgs" : hemisphere_image_urls
 
     }
 
